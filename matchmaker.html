@@ -9,7 +9,7 @@
   <title>Matchmaker | UJU Foreal</title>
   <meta name="description" content="Find your perfect match with UJU Foreal.">
 </head>
-<body data-api-url="">
+<body data-api-url="https://uju-production.up.railway.app">
   <!-- 
     To set your production API URL, add data-api-url attribute to body tag above:
     Example: <body data-api-url="https://your-backend.herokuapp.com">
@@ -388,21 +388,28 @@
 
       // Detect API URL based on environment
       // Priority: 1) data-api-url attribute, 2) localhost detection, 3) production default
-      const bodyApiUrl = document.body?.dataset?.apiUrl;
+      const bodyApiUrl = document.body?.dataset?.apiUrl || document.body?.getAttribute('data-api-url');
       let API_BASE_URL;
+      
+      console.log('Raw data-api-url attribute:', document.body?.getAttribute('data-api-url'));
+      console.log('Dataset apiUrl:', document.body?.dataset?.apiUrl);
       
       if (bodyApiUrl && bodyApiUrl.trim() !== '') {
         // Use explicitly set API URL from data attribute
         API_BASE_URL = bodyApiUrl.trim();
+        console.log('Using Railway URL from data-api-url:', API_BASE_URL);
       } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         // Local development
         API_BASE_URL = 'http://localhost:3000';
+        console.log('Using localhost for development');
       } else {
-        // Production - client-side validation will be used
-        API_BASE_URL = ''; // Empty means use client-side validation only
+        // Production - you MUST set data-api-url attribute with your deployed backend URL
+        // Example: <body data-api-url="https://your-app.railway.app">
+        console.error('API_BASE_URL not configured for production. Please set data-api-url attribute on <body> tag.');
+        API_BASE_URL = ''; // Will cause errors until configured
       }
       
-      console.log('API Base URL:', API_BASE_URL || 'NOT CONFIGURED (using client-side validation)');
+      console.log('Final API Base URL:', API_BASE_URL || 'NOT CONFIGURED');
       console.log('Hostname:', window.location.hostname);
       console.log('Client-side font validation available:', GOOGLE_FONTS_LIST.length, 'fonts');
       
