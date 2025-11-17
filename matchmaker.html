@@ -360,50 +360,8 @@
 
       // API Integration
     (function() {
-      // Detect API URL based on environment
-      // Priority: 1) data-api-url attribute, 2) localhost detection, 3) production default
-      const bodyApiUrl = document.body?.dataset?.apiUrl;
-      let API_BASE_URL;
-      
-      if (bodyApiUrl && bodyApiUrl.trim() !== '') {
-        // Use explicitly set API URL from data attribute
-        API_BASE_URL = bodyApiUrl.trim();
-      } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        // Local development
-        API_BASE_URL = 'http://localhost:3000';
-      } else {
-        // Production - you MUST set data-api-url attribute with your deployed backend URL
-        // Example: <body data-api-url="https://your-app.herokuapp.com">
-        console.error('API_BASE_URL not configured for production. Please set data-api-url attribute on <body> tag.');
-        API_BASE_URL = ''; // Will cause errors until configured
-      }
-      
-      console.log('API Base URL:', API_BASE_URL || 'NOT CONFIGURED');
-      let currentFormData = null;
-      let previousPairs = []; // Track previously generated pairs to avoid duplicates
-
-      const generateBtn = document.getElementById('generateBtn');
-      const refreshBtn = document.getElementById('refreshBtn');
-      const resultsHead = document.getElementById('resultsHead');
-      const resultsGrid = document.getElementById('resultsGrid');
-      const resultsText = document.getElementById('resultsText');
-      const styleText = document.getElementById('styleText');
-      const emotionText = document.getElementById('emotionText');
-      const currentTypefaceInput = document.getElementById('currentTypeface');
-      const emotionHidden = document.querySelector('[name="emotion"]');
-      const styleHidden = document.querySelector('[name="style"]');
-
-      function getFormData() {
-        const currentTypeface = currentTypefaceInput.value.trim();
-        const emotion = emotionHidden.value.trim();
-        const style = styleHidden.value.trim();
-        return { currentTypeface, emotion, style };
-      }
-
-      let fontValidationCache = {}; // Cache validation results
-      let isValidGoogleFont = false;
-
       // Comprehensive list of Google Fonts for client-side validation fallback
+      // This list is used when backend is unavailable (e.g., GitHub Pages)
       const GOOGLE_FONTS_LIST = [
         'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Oswald', 'Source Sans Pro',
         'Raleway', 'PT Sans', 'Merriweather', 'Playfair Display', 'Poppins',
@@ -428,15 +386,77 @@
         'Ubuntu Condensed', 'Ubuntu Mono', 'Varela', 'Yanone Kaffeesatz'
       ];
 
+      // Detect API URL based on environment
+      // Priority: 1) data-api-url attribute, 2) localhost detection, 3) production default
+      const bodyApiUrl = document.body?.dataset?.apiUrl;
+      let API_BASE_URL;
+      
+      if (bodyApiUrl && bodyApiUrl.trim() !== '') {
+        // Use explicitly set API URL from data attribute
+        API_BASE_URL = bodyApiUrl.trim();
+      } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // Local development
+        API_BASE_URL = 'http://localhost:3000';
+      } else {
+        // Production - client-side validation will be used
+        API_BASE_URL = ''; // Empty means use client-side validation only
+      }
+      
+      console.log('API Base URL:', API_BASE_URL || 'NOT CONFIGURED (using client-side validation)');
+      console.log('Hostname:', window.location.hostname);
+      console.log('Client-side font validation available:', GOOGLE_FONTS_LIST.length, 'fonts');
+      
+      let currentFormData = null;
+      let previousPairs = []; // Track previously generated pairs to avoid duplicates
+
+      const generateBtn = document.getElementById('generateBtn');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const resultsHead = document.getElementById('resultsHead');
+      const resultsGrid = document.getElementById('resultsGrid');
+      const resultsText = document.getElementById('resultsText');
+      const styleText = document.getElementById('styleText');
+      const emotionText = document.getElementById('emotionText');
+      const currentTypefaceInput = document.getElementById('currentTypeface');
+      const emotionHidden = document.querySelector('[name="emotion"]');
+      const styleHidden = document.querySelector('[name="style"]');
+
+      function getFormData() {
+        const currentTypeface = currentTypefaceInput.value.trim();
+        const emotion = emotionHidden.value.trim();
+        const style = styleHidden.value.trim();
+        return { currentTypeface, emotion, style };
+      }
+
+      let fontValidationCache = {}; // Cache validation results
+      let isValidGoogleFont = false;
+
       // Client-side validation fallback
       function validateGoogleFontClientSide(fontName) {
         if (!fontName || fontName.trim() === '') {
           return false;
         }
+        
+        // Normalize input: trim and handle case-insensitive matching
         const normalized = fontName.trim().toLowerCase();
-        return GOOGLE_FONTS_LIST.some(font => 
+        
+        // Check exact match first
+        const exactMatch = GOOGLE_FONTS_LIST.some(font => 
           font.toLowerCase() === normalized
         );
+        
+        if (exactMatch) {
+          return true;
+        }
+        
+        // Also check if it's a variation (e.g., "Roboto" matches "Roboto Condensed")
+        const variationMatch = GOOGLE_FONTS_LIST.some(font => {
+          const fontLower = font.toLowerCase();
+          // Check if input is a base name that matches a font variation
+          // e.g., "roboto" matches "Roboto Condensed", "Roboto Slab", etc.
+          return fontLower.startsWith(normalized + ' ') || fontLower === normalized;
+        });
+        
+        return variationMatch;
       }
 
       async function validateGoogleFont(fontName) {
@@ -451,6 +471,8 @@
           return fontValidationCache[normalized];
         }
 
+        let isValid = false;
+
         // Try backend API first if available
         if (API_BASE_URL && API_BASE_URL.trim() !== '') {
           try {
@@ -464,21 +486,29 @@
 
             if (response.ok) {
               const data = await response.json();
-              const isValid = data.isValid === true;
+              isValid = data.isValid === true;
               
               // Cache the result
               fontValidationCache[normalized] = isValid;
               return isValid;
+            } else {
+              // Backend returned error, fall through to client-side
+              console.log('Backend validation returned error, using client-side fallback');
             }
           } catch (error) {
+            // Network error or backend unavailable, use client-side fallback
             console.log('Backend validation failed, using client-side fallback:', error.message);
-            // Fall through to client-side validation
           }
         }
 
-        // Fallback to client-side validation if backend unavailable
-        const isValid = validateGoogleFontClientSide(fontName);
+        // Use client-side validation (always works, even without backend)
+        isValid = validateGoogleFontClientSide(fontName);
         fontValidationCache[normalized] = isValid;
+        
+        if (!isValid) {
+          console.log(`Font "${fontName}" not found in Google Fonts list`);
+        }
+        
         return isValid;
       }
 
@@ -1298,7 +1328,9 @@
         validationTimeout = setTimeout(async () => {
           const fontName = this.value.trim();
           if (fontName) {
+            console.log('Validating font:', fontName);
             const isValid = await validateGoogleFont(fontName);
+            console.log('Validation result:', isValid ? 'VALID' : 'INVALID');
             showFontError(!isValid);
           } else {
             showFontError(false);
