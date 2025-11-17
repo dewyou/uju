@@ -9,7 +9,12 @@
   <title>Matchmaker | UJU Foreal</title>
   <meta name="description" content="Find your perfect match with UJU Foreal.">
 </head>
-<body>
+<body data-api-url="">
+  <!-- 
+    To set your production API URL, add data-api-url attribute to body tag above:
+    Example: <body data-api-url="https://your-backend.herokuapp.com">
+    Or leave empty to auto-detect (localhost for local, needs manual config for production)
+  -->
   <div class="mm-topbar">
     <div class="mm-brand">UjU</div>
     <nav class="mm-nav">
@@ -355,7 +360,25 @@
 
       // API Integration
     (function() {
-      const API_BASE_URL = 'http://localhost:3000';
+      // Detect API URL based on environment
+      // Priority: 1) data-api-url attribute, 2) localhost detection, 3) production default
+      const bodyApiUrl = document.body?.dataset?.apiUrl;
+      let API_BASE_URL;
+      
+      if (bodyApiUrl && bodyApiUrl.trim() !== '') {
+        // Use explicitly set API URL from data attribute
+        API_BASE_URL = bodyApiUrl.trim();
+      } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // Local development
+        API_BASE_URL = 'http://localhost:3000';
+      } else {
+        // Production - you MUST set data-api-url attribute with your deployed backend URL
+        // Example: <body data-api-url="https://your-app.herokuapp.com">
+        console.error('API_BASE_URL not configured for production. Please set data-api-url attribute on <body> tag.');
+        API_BASE_URL = ''; // Will cause errors until configured
+      }
+      
+      console.log('API Base URL:', API_BASE_URL || 'NOT CONFIGURED');
       let currentFormData = null;
       let previousPairs = []; // Track previously generated pairs to avoid duplicates
 
@@ -380,6 +403,42 @@
       let fontValidationCache = {}; // Cache validation results
       let isValidGoogleFont = false;
 
+      // Comprehensive list of Google Fonts for client-side validation fallback
+      const GOOGLE_FONTS_LIST = [
+        'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Oswald', 'Source Sans Pro',
+        'Raleway', 'PT Sans', 'Merriweather', 'Playfair Display', 'Poppins',
+        'Roboto Condensed', 'Roboto Slab', 'Lora', 'Ubuntu', 'Noto Sans',
+        'Nunito', 'Dancing Script', 'Crimson Text', 'Bitter', 'Arimo', 'PT Serif',
+        'Droid Sans', 'Droid Serif', 'Fjalla One', 'Indie Flower', 'Shadows Into Light',
+        'Pacifico', 'Bebas Neue', 'Anton', 'Cabin', 'Josefin Sans', 'Libre Baskerville',
+        'Muli', 'Quicksand', 'Rokkitt', 'Titillium Web', 'Varela Round', 'Work Sans',
+        'Yanone Kaffeesatz', 'Abril Fatface', 'Amatic SC', 'Bangers', 'Comfortaa',
+        'Courgette', 'Crete Round', 'Dosis', 'Fira Sans', 'Inconsolata', 'Karla',
+        'Lobster', 'Lobster Two', 'Maven Pro', 'Oxygen', 'PT Sans Narrow', 'Righteous',
+        'Satisfy', 'Tangerine', 'Vollkorn', 'Alegreya', 'Alegreya Sans', 'Archivo',
+        'Archivo Narrow', 'Barlow', 'Cormorant', 'Crimson Pro', 'DM Sans', 'DM Serif Display',
+        'Fira Code', 'Inter', 'JetBrains Mono', 'Manrope', 'Space Grotesk', 'Space Mono',
+        'Syne', 'Exo', 'Exo 2', 'Fira Mono', 'Hind', 'Kanit', 'Mukta',
+        'Nunito Sans', 'Orbitron', 'Rajdhani', 'Rubik', 'Saira', 'Teko', 'Zilla Slab',
+        'Acme', 'Bree Serif', 'Cantarell', 'Cuprum', 'Droid Sans Mono', 'Francois One',
+        'Fredoka One', 'Gloria Hallelujah', 'Great Vibes', 'Kalam', 'Merriweather Sans',
+        'Monoton', 'Montserrat Alternates', 'Nixie One', 'Old Standard TT', 'Overpass',
+        'Permanent Marker', 'Playfair Display SC', 'PT Mono', 'Roboto Mono',
+        'Shadows Into Light Two', 'Source Code Pro', 'Source Serif Pro', 'Spectral',
+        'Ubuntu Condensed', 'Ubuntu Mono', 'Varela', 'Yanone Kaffeesatz'
+      ];
+
+      // Client-side validation fallback
+      function validateGoogleFontClientSide(fontName) {
+        if (!fontName || fontName.trim() === '') {
+          return false;
+        }
+        const normalized = fontName.trim().toLowerCase();
+        return GOOGLE_FONTS_LIST.some(font => 
+          font.toLowerCase() === normalized
+        );
+      }
+
       async function validateGoogleFont(fontName) {
         if (!fontName || fontName.trim() === '') {
           return false;
@@ -392,29 +451,35 @@
           return fontValidationCache[normalized];
         }
 
-        try {
-          const response = await fetch(API_BASE_URL + '/api/validate-google-font', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ fontName: fontName.trim() })
-          });
+        // Try backend API first if available
+        if (API_BASE_URL && API_BASE_URL.trim() !== '') {
+          try {
+            const response = await fetch(API_BASE_URL + '/api/validate-google-font', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ fontName: fontName.trim() })
+            });
 
-          if (!response.ok) {
-            return false;
+            if (response.ok) {
+              const data = await response.json();
+              const isValid = data.isValid === true;
+              
+              // Cache the result
+              fontValidationCache[normalized] = isValid;
+              return isValid;
+            }
+          } catch (error) {
+            console.log('Backend validation failed, using client-side fallback:', error.message);
+            // Fall through to client-side validation
           }
-
-          const data = await response.json();
-          const isValid = data.isValid === true;
-          
-          // Cache the result
-          fontValidationCache[normalized] = isValid;
-          return isValid;
-        } catch (error) {
-          console.error('Font validation error:', error);
-          return false;
         }
+
+        // Fallback to client-side validation if backend unavailable
+        const isValid = validateGoogleFontClientSide(fontName);
+        fontValidationCache[normalized] = isValid;
+        return isValid;
       }
 
       function showFontError(show) {

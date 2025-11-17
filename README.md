@@ -124,9 +124,55 @@ OPENAI_API_KEY=your_key_here
 }
 ```
 
+## Deployment
+
+### Frontend (GitHub Pages)
+
+1. Push your code to GitHub
+2. Go to repository Settings → Pages
+3. Select source branch and folder
+4. Your site will be available at `https://yourusername.github.io/repo-name/`
+
+**Important:** Font validation will work client-side, but you need to deploy the backend separately for font pair generation.
+
+### Backend Deployment
+
+The backend must be deployed separately (GitHub Pages only serves static files). Options:
+
+**Option 1: Heroku**
+```bash
+# Install Heroku CLI, then:
+heroku create your-app-name
+git push heroku main
+# Set environment variables:
+heroku config:set OPENAI_API_KEY=your_key_here
+```
+
+**Option 2: Railway**
+1. Connect your GitHub repo
+2. Add environment variables in Railway dashboard
+3. Deploy automatically
+
+**Option 3: Render**
+1. Create new Web Service
+2. Connect GitHub repo
+3. Set environment variables
+4. Deploy
+
+### Configure Frontend for Production
+
+After deploying your backend, update `matchmaker.html`:
+
+```html
+<body data-api-url="https://your-backend.herokuapp.com">
+```
+
+Replace `https://your-backend.herokuapp.com` with your actual backend URL.
+
 ## Security Notes
 
 - API key is stored server-side only
 - Backend validates all inputs
 - CORS is configured for development (adjust for production)
+- Font validation works client-side as fallback when backend unavailable
 
