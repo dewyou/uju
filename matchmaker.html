@@ -1,0 +1,1265 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <title>Matchmaker | UJU Foreal</title>
+  <meta name="description" content="Find your perfect match with UJU Foreal.">
+</head>
+<body>
+  <div class="mm-topbar">
+    <div class="mm-brand">UjU</div>
+    <nav class="mm-nav">
+      <a href="matchmaker.html">Match Maker</a>
+      <a href="learn.html">Learn</a>
+      <a href="about.html">About</a>
+    </nav>
+  </div>
+  <main class="mm-container">
+    <section class="mm-hero" aria-labelledby="mm-hero-title">
+      <h1 id="mm-hero-title">
+        Welcome to<br>
+        the MatchMaker.
+      </h1>
+      <p class="sub">Find the perfect typeface pairs for your project.</p>
+    </section>
+
+    <section class="mm-form" aria-labelledby="mm-form-title">
+      <h2 id="mm-form-title" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Typeface inputs</h2>
+      <label class="mm-label" for="currentTypeface" id="typefaceLabel">
+        Current typeface <span style="color: rgba(249, 249, 249, 0.5); font-weight: normal;">(optional)</span>
+        <span class="error-msg" id="typefaceError" style="display: none;">* font not on google fonts</span>
+      </label>
+      <input class="mm-input" id="currentTypeface" name="currentTypeface" type="text" placeholder="Input your current typeface or paste Google Fonts URL" />
+
+      <div class="mm-row">
+        <div class="mm-col">
+          <label class="mm-label" for="emotion-dd">Emotion</label>
+          <div class="mm-dd" data-dd="emotion">
+            <button id="emotion-dd" class="mm-dd-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span class="mm-dd-label">Select Emotion</span>
+              <span class="material-symbols-outlined mm-select-icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <ul class="mm-dd-menu" role="listbox" aria-label="Emotion options">
+              <li class="mm-dd-item" role="option" data-value="Friendly">Friendly</li>
+              <li class="mm-dd-item" role="option" data-value="Formal">Formal</li>
+              <li class="mm-dd-item" role="option" data-value="Playful">Playful</li>
+              <li class="mm-dd-item" role="option" data-value="Bold">Bold</li>
+              <li class="mm-dd-custom-input">
+                <input type="text" id="emotion-custom-input" placeholder="Type custom emotion..." />
+              </li>
+            </ul>
+            <input type="hidden" name="emotion" value="">
+          </div>
+        </div>
+        <div class="mm-col">
+          <label class="mm-label" for="style-dd">Style</label>
+          <div class="mm-dd" data-dd="style">
+            <button id="style-dd" class="mm-dd-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span class="mm-dd-label">Select Style</span>
+              <span class="material-symbols-outlined mm-select-icon" aria-hidden="true">chevron_right</span>
+            </button>
+            <ul class="mm-dd-menu" role="listbox" aria-label="Style options">
+              <li class="mm-dd-item" role="option" data-value="Serif">Serif</li>
+              <li class="mm-dd-item" role="option" data-value="Sans Serif">Sans Serif</li>
+              <li class="mm-dd-item" role="option" data-value="Slab Serif">Slab Serif</li>
+              <li class="mm-dd-item" role="option" data-value="Display">Display</li>
+              <li class="mm-dd-item" role="option" data-value="Script">Script</li>
+              <li class="mm-dd-item" role="option" data-value="Monospace">Monospace</li>
+            </ul>
+            <input type="hidden" name="style" value="">
+          </div>
+        </div>
+        <button class="mm-generate" type="button" id="generateBtn">Generate</button>
+      </div>
+    </section>
+
+    <section class="mm-results-head" aria-live="polite" id="resultsHead">
+      <div class="line" id="resultsText">
+        Showing results for <b id="styleText">Style</b> with a <b id="emotionText">Emotion</b> Look
+      </div>
+      <div class="mm-actions">
+        <div class="mm-action" id="refreshBtn">
+          <img alt="" width="21" height="21" src="https://www.figma.com/api/mcp/asset/78d21479-aab3-446b-800f-50b28a341099">
+          <span>Refresh</span>
+        </div>
+        <div class="mm-action" id="keepBtn">
+          <span class="material-symbols-outlined">favorite</span>
+          <span>To keep</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mm-grid" aria-label="Typeface recommendations" id="resultsGrid">
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+      <div class="mm-card">
+        <button class="heart-btn" type="button" aria-label="Save font pair">
+          <span class="material-symbols-outlined">favorite</span>
+        </button>
+        <div>
+          <h3>Heading</h3>
+          <p>Subheading</p>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span class="big">A</span><span class="small">A</span>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; <span id="year"></span> UJU Foreal</p>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    // Custom dropdown behavior
+    (function () {
+      function closeAll(except) {
+        document.querySelectorAll('.mm-dd').forEach(function(dd){
+          if (dd !== except) {
+            dd.classList.remove('open');
+            var btn = dd.querySelector('.mm-dd-toggle');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+      function attach(dd) {
+        var button = dd.querySelector('.mm-dd-toggle');
+        var menu = dd.querySelector('.mm-dd-menu');
+        var label = dd.querySelector('.mm-dd-label');
+        var hidden = dd.querySelector('input[type="hidden"]');
+        if (!button || !menu || !label || !hidden) return;
+        // Initialize has-value state
+        if (hidden.value && hidden.value.trim() !== '') {
+          dd.classList.add('has-value');
+        } else {
+          dd.classList.remove('has-value');
+        }
+        button.addEventListener('click', function(){
+          var isOpen = dd.classList.contains('open');
+          if (isOpen) {
+            dd.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+          } else {
+            closeAll(dd);
+            dd.classList.add('open');
+            button.setAttribute('aria-expanded', 'true');
+          }
+        });
+        menu.addEventListener('click', function(e){
+          var item = e.target.closest('.mm-dd-item');
+          if (!item) return;
+          // Don't handle clicks on custom input area
+          if (e.target.closest('.mm-dd-custom-input')) return;
+          var value = item.getAttribute('data-value') || item.textContent.trim();
+          hidden.value = value;
+          label.textContent = value;
+          dd.classList.add('has-value');
+          menu.querySelectorAll('.mm-dd-item').forEach(function(el){
+            el.setAttribute('aria-selected', el === item ? 'true' : 'false');
+          });
+          // Clear custom input when selecting predefined option
+          var customInput = menu.querySelector('.mm-dd-custom-input input');
+          if (customInput) customInput.value = '';
+          dd.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+        });
+
+        // Handle custom input for emotion dropdown
+        if (dd.dataset.dd === 'emotion') {
+          var customInput = menu.querySelector('.mm-dd-custom-input input');
+          if (customInput) {
+            // Prevent clicks on custom input from closing dropdown
+            customInput.addEventListener('click', function(e){
+              e.stopPropagation();
+            });
+            
+            customInput.addEventListener('keypress', function(e){
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                var customValue = this.value.trim();
+                if (customValue) {
+                  hidden.value = customValue;
+                  label.textContent = customValue;
+                  dd.classList.add('has-value');
+                  // Clear selection from predefined options
+                  menu.querySelectorAll('.mm-dd-item').forEach(function(el){
+                    el.setAttribute('aria-selected', 'false');
+                  });
+                  dd.classList.remove('open');
+                  button.setAttribute('aria-expanded', 'false');
+                }
+              }
+            });
+            
+            // Handle blur (when clicking outside) - but only if there's a value
+            customInput.addEventListener('blur', function(e){
+              // Small delay to allow click events to process first
+              setTimeout(function(){
+                var customValue = this.value.trim();
+                if (customValue) {
+                  hidden.value = customValue;
+                  label.textContent = customValue;
+                  dd.classList.add('has-value');
+                  menu.querySelectorAll('.mm-dd-item').forEach(function(el){
+                    el.setAttribute('aria-selected', 'false');
+                  });
+                }
+              }.bind(this), 200);
+            });
+          }
+        }
+      }
+      document.querySelectorAll('.mm-dd').forEach(attach);
+      document.addEventListener('click', function(e){
+        if (!e.target.closest('.mm-dd')) closeAll();
+      });
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape') closeAll();
+      });
+    })();
+
+      // API Integration
+    (function() {
+      const API_BASE_URL = 'http://localhost:3000';
+      let currentFormData = null;
+      let previousPairs = []; // Track previously generated pairs to avoid duplicates
+
+      const generateBtn = document.getElementById('generateBtn');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const resultsHead = document.getElementById('resultsHead');
+      const resultsGrid = document.getElementById('resultsGrid');
+      const resultsText = document.getElementById('resultsText');
+      const styleText = document.getElementById('styleText');
+      const emotionText = document.getElementById('emotionText');
+      const currentTypefaceInput = document.getElementById('currentTypeface');
+      const emotionHidden = document.querySelector('[name="emotion"]');
+      const styleHidden = document.querySelector('[name="style"]');
+
+      function getFormData() {
+        const currentTypeface = currentTypefaceInput.value.trim();
+        const emotion = emotionHidden.value.trim();
+        const style = styleHidden.value.trim();
+        return { currentTypeface, emotion, style };
+      }
+
+      let fontValidationCache = {}; // Cache validation results
+      let isValidGoogleFont = false;
+
+      async function validateGoogleFont(fontName) {
+        if (!fontName || fontName.trim() === '') {
+          return false;
+        }
+
+        const normalized = fontName.trim().toLowerCase();
+        
+        // Check cache first
+        if (fontValidationCache[normalized] !== undefined) {
+          return fontValidationCache[normalized];
+        }
+
+        try {
+          const response = await fetch(API_BASE_URL + '/api/validate-google-font', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ fontName: fontName.trim() })
+          });
+
+          if (!response.ok) {
+            return false;
+          }
+
+          const data = await response.json();
+          const isValid = data.isValid === true;
+          
+          // Cache the result
+          fontValidationCache[normalized] = isValid;
+          return isValid;
+        } catch (error) {
+          console.error('Font validation error:', error);
+          return false;
+        }
+      }
+
+      function showFontError(show) {
+        const label = document.getElementById('typefaceLabel');
+        const errorMsg = document.getElementById('typefaceError');
+        const input = currentTypefaceInput;
+
+        if (show) {
+          label.classList.add('error');
+          errorMsg.style.display = 'inline';
+          input.classList.add('error');
+          isValidGoogleFont = false;
+        } else {
+          label.classList.remove('error');
+          errorMsg.style.display = 'none';
+          input.classList.remove('error');
+          isValidGoogleFont = true;
+        }
+      }
+
+      async function validateForm() {
+        const data = getFormData();
+        
+        // Check required fields (emotion and style are required, currentTypeface is optional)
+        if (!data.emotion || !data.style) {
+          alert('Please fill in required fields: Emotion and Style');
+          return false;
+        }
+
+        // Only validate Google Font if currentTypeface is provided
+        if (data.currentTypeface && data.currentTypeface.trim() !== '') {
+          const isValid = await validateGoogleFont(data.currentTypeface);
+          if (!isValid) {
+            showFontError(true);
+            return false;
+          }
+          showFontError(false);
+        } else {
+          // Clear error if field is empty (it's optional)
+          showFontError(false);
+        }
+
+        return true;
+      }
+
+      function setLoading(isLoading) {
+        if (isLoading) {
+          generateBtn.classList.add('loading');
+          generateBtn.disabled = true;
+          generateBtn.textContent = 'Generating';
+        } else {
+          generateBtn.classList.remove('loading');
+          generateBtn.disabled = false;
+          generateBtn.textContent = 'Generate';
+        }
+      }
+
+      function showError(message) {
+        // More detailed error message
+        const errorMsg = message || 'Unknown error occurred';
+        console.error('Error details:', errorMsg);
+        alert('Error: ' + errorMsg + '\n\nTroubleshooting:\n1. Make sure the backend server is running (npm start)\n2. Check that the server is on http://localhost:3000\n3. If opening HTML directly, use a local web server instead');
+        setLoading(false);
+      }
+
+      // Session storage key for saved pairs
+      const SAVED_PAIRS_KEY = 'uju_saved_font_pairs';
+
+      function getSavedPairs() {
+        try {
+          const saved = sessionStorage.getItem(SAVED_PAIRS_KEY);
+          return saved ? JSON.parse(saved) : {};
+        } catch (error) {
+          console.error('Error loading saved pairs:', error);
+          return {};
+        }
+      }
+
+      function savePair(cardIndex, font1, font2, isSaved) {
+        const savedPairs = getSavedPairs();
+        const pairKey = `${font1}|${font2}`;
+        
+        if (isSaved) {
+          savedPairs[pairKey] = { font1, font2, index: cardIndex };
+        } else {
+          delete savedPairs[pairKey];
+        }
+        
+        try {
+          sessionStorage.setItem(SAVED_PAIRS_KEY, JSON.stringify(savedPairs));
+        } catch (error) {
+          console.error('Error saving pair:', error);
+        }
+      }
+
+      function isPairSaved(font1, font2) {
+        const savedPairs = getSavedPairs();
+        const pairKey = `${font1}|${font2}`;
+        return savedPairs.hasOwnProperty(pairKey);
+      }
+
+      // Load Google Fonts dynamically
+      function loadGoogleFont(fontName) {
+        if (!fontName) return;
+        
+        // Normalize font name for Google Fonts URL (replace spaces with +)
+        const fontUrlName = fontName.replace(/\s+/g, '+');
+        
+        // Check if font is already loaded
+        const linkId = `google-font-${fontUrlName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+        if (document.getElementById(linkId)) {
+          return; // Font already loaded
+        }
+        
+        // Create link element to load font
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${fontUrlName}:wght@400;500;700&display=swap`;
+        document.head.appendChild(link);
+      }
+
+      // Helper function to create Google Fonts URL
+      function getGoogleFontsUrl(fontName) {
+        if (!fontName) return '#';
+        // Remove quotes and clean font name
+        const cleanName = fontName.replace(/['"]/g, '').trim();
+        // Replace spaces with + for URL
+        const urlName = cleanName.replace(/\s+/g, '+');
+        return `https://fonts.google.com/specimen/${encodeURIComponent(urlName)}`;
+      }
+
+      // Create expanded card content structure
+      function createExpandedContent(card, pair) {
+        const font1 = pair.font1 || card.querySelector('h3')?.textContent || 'Heading';
+        const font2 = pair.font2 || card.querySelector('p')?.textContent || 'Subheading';
+        
+        // Get font samples
+        const bigGlyph = card.querySelector('.glyphs .big')?.textContent || 'A';
+        const smallGlyph = card.querySelector('.glyphs .small')?.textContent || 'g';
+        
+        // Get font families from card elements
+        const h3 = card.querySelector('h3');
+        const p = card.querySelector('p');
+        const big = card.querySelector('.glyphs .big');
+        const small = card.querySelector('.glyphs .small');
+        
+        const font1Family = h3?.style.fontFamily || `"${font1}", sans-serif`;
+        const font2Family = p?.style.fontFamily || `"${font2}", sans-serif`;
+        
+        // Create expanded content wrapper
+        const expandedContent = document.createElement('div');
+        expandedContent.className = 'expanded-content';
+        
+        // Header section
+        const header = document.createElement('div');
+        header.className = 'expanded-header';
+        
+        const fontPairLabel = document.createElement('div');
+        fontPairLabel.className = 'expanded-font-pair';
+        fontPairLabel.textContent = `${font1.toUpperCase()} X ${font2.toUpperCase()}`;
+        
+        const switchBtn = document.createElement('div');
+        switchBtn.className = 'expanded-switch-btn';
+        const switchImg = document.createElement('img');
+        switchImg.src = 'https://www.figma.com/api/mcp/asset/e645a035-cb8f-4c32-91b1-07b70463f91c';
+        switchImg.alt = 'Switch fonts';
+        switchBtn.appendChild(switchImg);
+        switchBtn.onclick = function(e) {
+          e.stopPropagation();
+          // Switch the fonts
+          const tempFont1 = font1;
+          const tempFont2 = font2;
+          card.dataset.font1 = tempFont2;
+          card.dataset.font2 = tempFont1;
+          
+          // Also update the card's h3 and p elements (for when collapsed)
+          const h3 = card.querySelector('h3');
+          const p = card.querySelector('p');
+          const big = card.querySelector('.glyphs .big');
+          const small = card.querySelector('.glyphs .small');
+          
+          if (h3) {
+            h3.textContent = tempFont2;
+            h3.style.fontFamily = p?.style.fontFamily || `"${tempFont2}", sans-serif`;
+          }
+          if (p) {
+            p.textContent = tempFont1;
+            p.style.fontFamily = h3?.style.fontFamily || `"${tempFont1}", sans-serif`;
+          }
+          if (big) {
+            big.style.fontFamily = p?.style.fontFamily || `"${tempFont2}", sans-serif`;
+          }
+          if (small) {
+            small.style.fontFamily = h3?.style.fontFamily || `"${tempFont1}", sans-serif`;
+          }
+          
+          // Recreate expanded content with switched fonts
+          createExpandedContent(card, { font1: tempFont2, font2: tempFont1 });
+        };
+        
+        const enterWords = document.createElement('div');
+        enterWords.className = 'expanded-enter-words';
+        
+        const enterLabel = document.createElement('div');
+        enterLabel.className = 'expanded-enter-label';
+        enterLabel.textContent = 'ENTER YOUR WORDS';
+        
+        const inputs = document.createElement('div');
+        inputs.className = 'expanded-inputs';
+        
+        const headingInput = document.createElement('input');
+        headingInput.className = 'expanded-input';
+        headingInput.type = 'text';
+        headingInput.placeholder = '';
+        headingInput.value = h3?.textContent || 'Heading';
+          headingInput.oninput = function() {
+            const headingEl = expandedContent.querySelector('.expanded-heading');
+            if (headingEl) headingEl.textContent = this.value || 'Heading';
+          };
+          
+          headingInput.onclick = function(e) {
+            e.stopPropagation();
+          };
+        
+        const subheadingInput = document.createElement('input');
+        subheadingInput.className = 'expanded-input';
+        subheadingInput.type = 'text';
+        subheadingInput.placeholder = '';
+        subheadingInput.value = p?.textContent || 'Subheading';
+          subheadingInput.oninput = function() {
+            const subheadingEl = expandedContent.querySelector('.expanded-subheading');
+            if (subheadingEl) subheadingEl.textContent = this.value || 'Subheading';
+          };
+          
+          subheadingInput.onclick = function(e) {
+            e.stopPropagation();
+          };
+        
+        inputs.appendChild(headingInput);
+        inputs.appendChild(subheadingInput);
+        enterWords.appendChild(enterLabel);
+        enterWords.appendChild(inputs);
+        
+        const closeBtn = document.createElement('div');
+        closeBtn.className = 'expanded-close-btn';
+        const closeImg = document.createElement('img');
+        closeImg.src = 'https://www.figma.com/api/mcp/asset/ebf94ffa-42cf-4a85-b724-dcd5c7608fb1';
+        closeImg.alt = 'Close';
+        closeBtn.appendChild(closeImg);
+        closeBtn.onclick = function(e) {
+          e.stopPropagation();
+          card.classList.remove('expanded');
+          expandedContent.remove();
+        };
+        
+        header.appendChild(fontPairLabel);
+        header.appendChild(switchBtn);
+        header.appendChild(enterWords);
+        header.appendChild(closeBtn);
+        
+        // Main content section
+        const main = document.createElement('div');
+        main.className = 'expanded-main';
+        
+        const headingLink = document.createElement('a');
+        headingLink.href = getGoogleFontsUrl(font1);
+        headingLink.target = '_blank';
+        headingLink.rel = 'noopener noreferrer';
+        headingLink.className = 'expanded-heading-link';
+        headingLink.onclick = function(e) {
+          e.stopPropagation();
+        };
+        
+        const heading = document.createElement('h2');
+        heading.className = 'expanded-heading';
+        heading.textContent = h3?.textContent || 'Heading';
+        heading.style.fontFamily = font1Family;
+        headingLink.appendChild(heading);
+        
+        const subheadingLink = document.createElement('a');
+        subheadingLink.href = getGoogleFontsUrl(font2);
+        subheadingLink.target = '_blank';
+        subheadingLink.rel = 'noopener noreferrer';
+        subheadingLink.className = 'expanded-subheading-link';
+        subheadingLink.onclick = function(e) {
+          e.stopPropagation();
+        };
+        
+        const subheading = document.createElement('p');
+        subheading.className = 'expanded-subheading';
+        subheading.textContent = p?.textContent || 'Subheading';
+        subheading.style.fontFamily = font2Family;
+        subheadingLink.appendChild(subheading);
+        
+        const body = document.createElement('p');
+        body.className = 'expanded-body';
+        body.textContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.';
+        body.style.fontFamily = font2Family;
+        
+        main.appendChild(headingLink);
+        main.appendChild(subheadingLink);
+        main.appendChild(body);
+        
+        // Footer section
+        const footer = document.createElement('div');
+        footer.className = 'expanded-footer';
+        
+        const alphabets = document.createElement('div');
+        alphabets.className = 'expanded-alphabets';
+        
+        // Font 1 alphabet
+        const alphabet1 = document.createElement('div');
+        alphabet1.className = 'expanded-alphabet';
+        
+        const label1 = document.createElement('div');
+        label1.className = 'expanded-alphabet-label';
+        label1.textContent = font1.toUpperCase();
+        
+        const upper1 = document.createElement('div');
+        upper1.className = 'expanded-alphabet-upper';
+        upper1.textContent = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        upper1.style.fontFamily = font1Family;
+        
+        const lower1 = document.createElement('div');
+        lower1.className = 'expanded-alphabet-lower';
+        lower1.textContent = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        lower1.style.fontFamily = font1Family;
+        
+        alphabet1.appendChild(label1);
+        alphabet1.appendChild(upper1);
+        alphabet1.appendChild(lower1);
+        
+        // Font 2 alphabet
+        const alphabet2 = document.createElement('div');
+        alphabet2.className = 'expanded-alphabet';
+        
+        const label2 = document.createElement('div');
+        label2.className = 'expanded-alphabet-label';
+        label2.textContent = font2.toUpperCase();
+        
+        const upper2 = document.createElement('div');
+        upper2.className = 'expanded-alphabet-upper';
+        upper2.textContent = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        upper2.style.fontFamily = font2Family;
+        
+        const lower2 = document.createElement('div');
+        lower2.className = 'expanded-alphabet-lower';
+        lower2.textContent = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        lower2.style.fontFamily = font2Family;
+        
+        alphabet2.appendChild(label2);
+        alphabet2.appendChild(upper2);
+        alphabet2.appendChild(lower2);
+        
+        alphabets.appendChild(alphabet1);
+        alphabets.appendChild(alphabet2);
+        
+        footer.appendChild(alphabets);
+        
+        // Assemble expanded content
+        expandedContent.appendChild(header);
+        expandedContent.appendChild(main);
+        expandedContent.appendChild(footer);
+        
+        // Remove existing expanded content if any
+        const existing = card.querySelector('.expanded-content');
+        if (existing) existing.remove();
+        
+        // Add to card
+        card.appendChild(expandedContent);
+      }
+
+      function populateCards(fontPairs) {
+        // Collect all unique fonts to load
+        const fontsToLoad = new Set();
+        fontPairs.forEach(pair => {
+          if (pair.font1) fontsToLoad.add(pair.font1);
+          if (pair.font2) fontsToLoad.add(pair.font2);
+        });
+        
+        // Load all fonts
+        fontsToLoad.forEach(font => loadGoogleFont(font));
+        
+        const cards = document.querySelectorAll('.mm-card');
+        cards.forEach((card, index) => {
+          const pair = fontPairs[index];
+          // Always populate card, even if pair doesn't exist (will use fallback)
+          if (pair) {
+            const h3 = card.querySelector('h3');
+            const p = card.querySelector('p');
+            const big = card.querySelector('.glyphs .big');
+            const small = card.querySelector('.glyphs .small');
+            
+            const font1 = pair.font1 || 'Font ' + (index + 1);
+            const font2 = pair.font2 || 'Pair Font ' + (index + 1);
+            
+            // Determine fallback font based on style (if available)
+            const currentStyle = styleHidden.value || '';
+            let fallback = 'serif'; // default
+            if (currentStyle === 'Sans Serif') fallback = 'sans-serif';
+            else if (currentStyle === 'Monospace') fallback = 'monospace';
+            else if (currentStyle === 'Script') fallback = 'cursive';
+            else if (currentStyle === 'Display') fallback = 'sans-serif';
+            else if (currentStyle === 'Slab Serif') fallback = 'serif';
+            
+            if (h3) {
+              h3.textContent = font1;
+              // Apply font1 to heading
+              h3.style.fontFamily = `"${font1}", ${fallback}`;
+            }
+            if (p) {
+              p.textContent = font2;
+              // Apply font2 to subheading
+              p.style.fontFamily = `"${font2}", ${fallback}`;
+            }
+            if (big) {
+              big.textContent = pair.sample1 || 'A';
+              // Apply font1 to big glyph
+              big.style.fontFamily = `"${font1}", ${fallback}`;
+            }
+            if (small) {
+              small.textContent = pair.sample2 || 'A';
+              // Apply font2 to small glyph
+              small.style.fontFamily = `"${font2}", ${fallback}`;
+            }
+
+            // Store font pair data on card for saving
+            card.dataset.font1 = font1;
+            card.dataset.font2 = font2;
+            card.dataset.cardIndex = index;
+
+            // Restore saved state from sessionStorage
+            const heartBtn = card.querySelector('.heart-btn');
+            if (heartBtn) {
+              const saved = isPairSaved(font1, font2);
+              if (saved) {
+                heartBtn.classList.add('saved');
+              } else {
+                heartBtn.classList.remove('saved');
+              }
+            }
+          } else {
+            // If no pair data, keep placeholder but ensure it's styled correctly
+            const h3 = card.querySelector('h3');
+            const p = card.querySelector('p');
+            const big = card.querySelector('.glyphs .big');
+            const small = card.querySelector('.glyphs .small');
+            
+            // Keep default text but ensure fonts are reset
+            if (h3) {
+              h3.textContent = 'Heading';
+              h3.style.fontFamily = '';
+            }
+            if (p) {
+              p.textContent = 'Subheading';
+              p.style.fontFamily = '';
+            }
+            if (big) {
+              big.textContent = 'A';
+              big.style.fontFamily = '';
+            }
+            if (small) {
+              small.textContent = 'A';
+              small.style.fontFamily = '';
+            }
+          }
+          
+          // Remove any existing expanded state
+          card.classList.remove('expanded');
+          // Remove any existing expanded content
+          const existingExpanded = card.querySelector('.expanded-content');
+          if (existingExpanded) {
+            existingExpanded.remove();
+          }
+          
+          // Add click handler for expansion (but not on heart button)
+          card.onclick = function(e) {
+            // Don't expand if clicking on heart button, close button, switch button, inputs, or font links
+            if (e.target.closest('.heart-btn') || 
+                e.target.closest('.mm-action') ||
+                e.target.closest('.expanded-close-btn') ||
+                e.target.closest('.expanded-switch-btn') ||
+                e.target.closest('.expanded-input') ||
+                e.target.closest('.expanded-heading-link') ||
+                e.target.closest('.expanded-subheading-link')) return;
+            
+            const isExpanded = card.classList.contains('expanded');
+            
+            // Collapse all cards first
+            cards.forEach(c => {
+              c.classList.remove('expanded');
+              const expContent = c.querySelector('.expanded-content');
+              if (expContent) expContent.remove();
+            });
+            
+            // If this card wasn't expanded, expand it now
+            if (!isExpanded) {
+              createExpandedContent(card, pair || { font1: 'Heading', font2: 'Subheading' });
+              card.classList.add('expanded');
+              
+              // Smooth scroll to expanded card
+              setTimeout(() => {
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }, 100);
+            }
+          };
+
+          // Add heart button click handler
+          const heartBtn = card.querySelector('.heart-btn');
+          if (heartBtn) {
+            heartBtn.onclick = function(e) {
+              e.stopPropagation(); // Prevent card expansion
+              
+              const font1 = card.dataset.font1 || card.querySelector('h3')?.textContent || '';
+              const font2 = card.dataset.font2 || card.querySelector('p')?.textContent || '';
+              const cardIndex = parseInt(card.dataset.cardIndex || index);
+              
+              const isSaved = heartBtn.classList.contains('saved');
+              
+              if (isSaved) {
+                heartBtn.classList.remove('saved');
+                savePair(cardIndex, font1, font2, false);
+              } else {
+                heartBtn.classList.add('saved');
+                savePair(cardIndex, font1, font2, true);
+              }
+            };
+          }
+        });
+      }
+
+      function updateResultsHeader(style, emotion) {
+        if (styleText) styleText.textContent = style;
+        if (emotionText) emotionText.textContent = emotion;
+      }
+
+      function showResults(style, emotion) {
+        updateResultsHeader(style, emotion);
+        resultsHead.classList.add('show');
+        resultsGrid.classList.add('show');
+        // Smooth scroll to results
+        setTimeout(() => {
+          resultsHead.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+
+      async function generateMatches() {
+        // Validate form (including Google Font check)
+        const isValid = await validateForm();
+        if (!isValid) {
+          return; // Error already shown
+        }
+
+        const formData = getFormData();
+        
+        // Check if this is a new generation (different inputs) or a refresh (same inputs)
+        const isNewGeneration = !currentFormData || 
+          currentFormData.currentTypeface !== formData.currentTypeface ||
+          currentFormData.emotion !== formData.emotion ||
+          currentFormData.style !== formData.style;
+        
+        // Reset previous pairs if it's a new generation (different inputs)
+        if (isNewGeneration) {
+          previousPairs = [];
+        }
+        
+        currentFormData = formData; // Store for refresh
+        setLoading(true);
+
+        try {
+          // Include previous pairs to avoid duplicates on refresh
+          const requestBody = {
+            ...formData,
+            previousPairs: previousPairs.length > 0 ? previousPairs : undefined
+          };
+
+          const response = await fetch(API_BASE_URL + '/api/generate-matches', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Failed to generate matches');
+          }
+
+          const data = await response.json();
+          
+          if (!data.fontPairs || !Array.isArray(data.fontPairs)) {
+            throw new Error('Invalid response format');
+          }
+
+          // Store current pairs as previous pairs for next refresh
+          previousPairs = data.fontPairs.map(pair => ({
+            font1: pair.font1,
+            font2: pair.font2
+          }));
+
+          populateCards(data.fontPairs);
+          showResults(formData.style, formData.emotion);
+          setLoading(false);
+
+        } catch (error) {
+          console.error('API Error:', error);
+          let errorMessage = error.message || 'Failed to connect to server';
+          
+          // Provide more specific error messages
+          if (error.message && error.message.includes('Failed to fetch')) {
+            errorMessage = 'Cannot connect to backend server. Please ensure:\n1. Backend server is running (run "npm start" in terminal)\n2. Server is accessible at http://localhost:3000\n3. If opening HTML via file://, use a local web server instead';
+          } else if (error.message && error.message.includes('CORS')) {
+            errorMessage = 'CORS error: Please open the HTML file through a web server, not directly (file://). Use a local server like "python -m http.server" or "npx serve"';
+          }
+          
+          showError(errorMessage);
+        }
+      }
+
+      // Generate button handler
+      generateBtn.addEventListener('click', generateMatches);
+
+      // Refresh button handler
+      refreshBtn.addEventListener('click', function() {
+        if (currentFormData) {
+          // Re-populate form with stored data and regenerate
+          currentTypefaceInput.value = currentFormData.currentTypeface;
+          emotionHidden.value = currentFormData.emotion;
+          styleHidden.value = currentFormData.style;
+          
+          // Update dropdown labels
+          const emotionDD = document.querySelector('[data-dd="emotion"]');
+          const styleDD = document.querySelector('[data-dd="style"]');
+          if (emotionDD) {
+            emotionDD.querySelector('.mm-dd-label').textContent = currentFormData.emotion;
+            emotionDD.classList.add('has-value');
+          }
+          if (styleDD) {
+            styleDD.querySelector('.mm-dd-label').textContent = currentFormData.style;
+            styleDD.classList.add('has-value');
+          }
+          
+          generateMatches();
+        } else {
+          alert('No previous search to refresh. Please generate matches first.');
+        }
+      });
+
+      // Keep button handler (placeholder for future feature)
+      document.getElementById('keepBtn').addEventListener('click', function() {
+        // Future: Save favorites functionality
+        console.log('To keep feature - coming soon');
+      });
+
+      // Extract font name from Google Fonts URL
+      function extractFontNameFromUrl(url) {
+        if (!url || typeof url !== 'string') return null;
+        
+        const trimmed = url.trim();
+        
+        // If it's already just a font name (no URL), return as-is
+        if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+          return trimmed;
+        }
+        
+        try {
+          const urlObj = new URL(trimmed);
+          
+          // Handle fonts.google.com/specimen/Font+Name format
+          if (urlObj.hostname.includes('fonts.google.com')) {
+            const pathParts = urlObj.pathname.split('/');
+            const specimenIndex = pathParts.indexOf('specimen');
+            if (specimenIndex !== -1 && pathParts[specimenIndex + 1]) {
+              // Decode URL-encoded font name (e.g., "Roboto+Mono" -> "Roboto Mono")
+              return decodeURIComponent(pathParts[specimenIndex + 1].replace(/\+/g, ' '));
+            }
+          }
+          
+          // Handle fonts.googleapis.com/css2?family=Font+Name format
+          if (urlObj.hostname.includes('fonts.googleapis.com') || urlObj.hostname.includes('fonts.gstatic.com')) {
+            const familyParam = urlObj.searchParams.get('family');
+            if (familyParam) {
+              // Extract font name before any colon (e.g., "Roboto:wght@400" -> "Roboto")
+              const fontName = familyParam.split(':')[0];
+              return decodeURIComponent(fontName.replace(/\+/g, ' '));
+            }
+            
+            // Also check pathname for font name
+            const pathParts = urlObj.pathname.split('/');
+            for (const part of pathParts) {
+              if (part && part !== 'css2' && part !== 'css') {
+                return decodeURIComponent(part.replace(/\+/g, ' '));
+              }
+            }
+          }
+        } catch (e) {
+          // If URL parsing fails, try to extract font name from string
+          // Look for common patterns
+          const patterns = [
+            /specimen\/([^\/\?]+)/i,
+            /family=([^:&]+)/i,
+            /fonts\.google\.com\/[^\/]+\/([^\/\?]+)/i
+          ];
+          
+          for (const pattern of patterns) {
+            const match = trimmed.match(pattern);
+            if (match && match[1]) {
+              return decodeURIComponent(match[1].replace(/\+/g, ' '));
+            }
+          }
+        }
+        
+        return null;
+      }
+
+      // Handle paste events to extract font name from Google Fonts URLs
+      currentTypefaceInput.addEventListener('paste', function(e) {
+        // Get pasted data
+        const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+        
+        if (pastedData) {
+          const extractedFontName = extractFontNameFromUrl(pastedData);
+          if (extractedFontName) {
+            // Prevent default paste
+            e.preventDefault();
+            
+            // Update input with extracted font name
+            this.value = extractedFontName;
+            
+            // Trigger input event to validate
+            this.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
+      });
+
+      // Real-time validation on input (optional field - only validate if something is entered)
+      let validationTimeout;
+      currentTypefaceInput.addEventListener('input', function() {
+        // Clear previous timeout
+        clearTimeout(validationTimeout);
+        
+        // Clear error state if field is empty (it's optional)
+        if (this.value.trim() === '') {
+          showFontError(false);
+          return;
+        }
+
+        // Debounce validation (wait 500ms after user stops typing)
+        validationTimeout = setTimeout(async () => {
+          const fontName = this.value.trim();
+          if (fontName) {
+            const isValid = await validateGoogleFont(fontName);
+            showFontError(!isValid);
+          } else {
+            showFontError(false);
+          }
+        }, 500);
+      });
+
+      // Allow Enter key to submit
+      currentTypefaceInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          generateMatches();
+        }
+      });
+
+      // Initialize card click handlers for placeholder cards
+      function initializeCardHandlers() {
+        const cards = document.querySelectorAll('.mm-card');
+        cards.forEach((card, index) => {
+          // Store placeholder data
+          const font1 = card.querySelector('h3')?.textContent || 'Heading';
+          const font2 = card.querySelector('p')?.textContent || 'Subheading';
+          card.dataset.font1 = font1;
+          card.dataset.font2 = font2;
+          card.dataset.cardIndex = index;
+
+          // Card expansion handler
+          card.onclick = function(e) {
+            // Don't expand if clicking on heart button, close button, switch button, inputs, or font links
+            if (e.target.closest('.heart-btn') || 
+                e.target.closest('.mm-action') ||
+                e.target.closest('.expanded-close-btn') ||
+                e.target.closest('.expanded-switch-btn') ||
+                e.target.closest('.expanded-input') ||
+                e.target.closest('.expanded-heading-link') ||
+                e.target.closest('.expanded-subheading-link')) return;
+            
+            const isExpanded = card.classList.contains('expanded');
+            
+            // Collapse all cards first
+            cards.forEach(c => {
+              c.classList.remove('expanded');
+              const expContent = c.querySelector('.expanded-content');
+              if (expContent) expContent.remove();
+            });
+            
+            // If this card wasn't expanded, expand it now
+            if (!isExpanded) {
+              const font1 = card.dataset.font1 || card.querySelector('h3')?.textContent || 'Heading';
+              const font2 = card.dataset.font2 || card.querySelector('p')?.textContent || 'Subheading';
+              createExpandedContent(card, { font1, font2 });
+              card.classList.add('expanded');
+              
+              // Smooth scroll to expanded card
+              setTimeout(() => {
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }, 100);
+            }
+          };
+
+          // Heart button handler for placeholder cards
+          const heartBtn = card.querySelector('.heart-btn');
+          if (heartBtn) {
+            heartBtn.onclick = function(e) {
+              e.stopPropagation(); // Prevent card expansion
+              
+              const font1 = card.dataset.font1 || 'Heading';
+              const font2 = card.dataset.font2 || 'Subheading';
+              const cardIndex = parseInt(card.dataset.cardIndex || index);
+              
+              const isSaved = heartBtn.classList.contains('saved');
+              
+              if (isSaved) {
+                heartBtn.classList.remove('saved');
+                savePair(cardIndex, font1, font2, false);
+              } else {
+                heartBtn.classList.add('saved');
+                savePair(cardIndex, font1, font2, true);
+              }
+            };
+          }
+        });
+      }
+
+      // Initialize handlers on page load
+      initializeCardHandlers();
+    })();
+  </script>
+</body>
+</html>
+
+
+
+
+
