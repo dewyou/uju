@@ -15,8 +15,14 @@ npm install
 Create a `.env` file in the root directory with your OpenAI API key:
 
 ```
-OPENAI_API_KEY=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
+OPENAI_API_KEY=your_openai_api_key_here
 PORT=3000
+```
+
+You can copy `.env.example` as a template:
+```bash
+cp .env.example .env
+# Then edit .env and add your actual API key
 ```
 
 **Important:** The `.env` file is already in `.gitignore` to keep your API key secure. Never commit your API key to version control.
