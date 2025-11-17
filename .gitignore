@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.local
+*.log
+.DS_Store
+
+# Note: .env.example is NOT ignored - it's safe to commit as a template

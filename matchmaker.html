@@ -520,8 +520,13 @@
       function loadGoogleFont(fontName) {
         if (!fontName) return;
         
+        // Normalize font name - capitalize first letter of each word for Google Fonts
+        const normalizedName = fontName.split(' ').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join(' ');
+        
         // Normalize font name for Google Fonts URL (replace spaces with +)
-        const fontUrlName = fontName.replace(/\s+/g, '+');
+        const fontUrlName = normalizedName.replace(/\s+/g, '+');
         
         // Check if font is already loaded
         const linkId = `google-font-${fontUrlName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
@@ -533,8 +538,11 @@
         const link = document.createElement('link');
         link.id = linkId;
         link.rel = 'stylesheet';
-        link.href = `https://fonts.googleapis.com/css2?family=${fontUrlName}:wght@400;500;700&display=swap`;
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontUrlName)}:wght@400;500;700&display=swap`;
         document.head.appendChild(link);
+        
+        // Return normalized name for use in fontFamily
+        return normalizedName;
       }
 
       // Helper function to create Google Fonts URL
@@ -549,21 +557,45 @@
 
       // Create expanded card content structure
       function createExpandedContent(card, pair) {
-        const font1 = pair.font1 || card.querySelector('h3')?.textContent || 'Heading';
-        const font2 = pair.font2 || card.querySelector('p')?.textContent || 'Subheading';
+        // Get font names from pair data or card dataset (most reliable)
+        const font1 = pair.font1 || card.dataset.font1 || card.querySelector('h3')?.textContent || 'Heading';
+        const font2 = pair.font2 || card.dataset.font2 || card.querySelector('p')?.textContent || 'Subheading';
         
         // Get font samples
         const bigGlyph = card.querySelector('.glyphs .big')?.textContent || 'A';
         const smallGlyph = card.querySelector('.glyphs .small')?.textContent || 'g';
         
-        // Get font families from card elements
+        // Get font families from card elements (fallback to constructing from font names)
         const h3 = card.querySelector('h3');
         const p = card.querySelector('p');
         const big = card.querySelector('.glyphs .big');
         const small = card.querySelector('.glyphs .small');
         
-        const font1Family = h3?.style.fontFamily || `"${font1}", sans-serif`;
-        const font2Family = p?.style.fontFamily || `"${font2}", sans-serif`;
+        // Determine fallback font based on style (if available)
+        const styleHidden = document.querySelector('[name="style"]');
+        const currentStyle = styleHidden?.value || '';
+        let fallback = 'serif'; // default
+        if (currentStyle === 'Sans Serif') fallback = 'sans-serif';
+        else if (currentStyle === 'Monospace') fallback = 'monospace';
+        else if (currentStyle === 'Script') fallback = 'cursive';
+        else if (currentStyle === 'Display') fallback = 'sans-serif';
+        else if (currentStyle === 'Slab Serif') fallback = 'serif';
+        
+        // Normalize font names for proper Google Fonts loading
+        const normalizedFont1 = font1.split(' ').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join(' ');
+        const normalizedFont2 = font2.split(' ').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join(' ');
+        
+        // Ensure fonts are loaded (returns normalized name)
+        if (font1) loadGoogleFont(font1);
+        if (font2) loadGoogleFont(font2);
+        
+        // Use normalized font names directly to construct fontFamily
+        const font1Family = `"${normalizedFont1}", ${fallback}`;
+        const font2Family = `"${normalizedFont2}", ${fallback}`;
         
         // Create expanded content wrapper
         const expandedContent = document.createElement('div');
@@ -597,19 +629,41 @@
           const big = card.querySelector('.glyphs .big');
           const small = card.querySelector('.glyphs .small');
           
+          // Determine fallback font
+          const styleHidden = document.querySelector('[name="style"]');
+          const currentStyle = styleHidden?.value || '';
+          let fallback = 'serif';
+          if (currentStyle === 'Sans Serif') fallback = 'sans-serif';
+          else if (currentStyle === 'Monospace') fallback = 'monospace';
+          else if (currentStyle === 'Script') fallback = 'cursive';
+          else if (currentStyle === 'Display') fallback = 'sans-serif';
+          else if (currentStyle === 'Slab Serif') fallback = 'serif';
+          
+          // Normalize font names for proper Google Fonts loading
+          const normalizedTempFont1 = tempFont1.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          ).join(' ');
+          const normalizedTempFont2 = tempFont2.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          ).join(' ');
+          
+          // Ensure fonts are loaded
+          loadGoogleFont(tempFont1);
+          loadGoogleFont(tempFont2);
+          
           if (h3) {
             h3.textContent = tempFont2;
-            h3.style.fontFamily = p?.style.fontFamily || `"${tempFont2}", sans-serif`;
+            h3.style.fontFamily = `"${normalizedTempFont2}", ${fallback}`;
           }
           if (p) {
             p.textContent = tempFont1;
-            p.style.fontFamily = h3?.style.fontFamily || `"${tempFont1}", sans-serif`;
+            p.style.fontFamily = `"${normalizedTempFont1}", ${fallback}`;
           }
           if (big) {
-            big.style.fontFamily = p?.style.fontFamily || `"${tempFont2}", sans-serif`;
+            big.style.fontFamily = `"${normalizedTempFont2}", ${fallback}`;
           }
           if (small) {
-            small.style.fontFamily = h3?.style.fontFamily || `"${tempFont1}", sans-serif`;
+            small.style.fontFamily = `"${normalizedTempFont1}", ${fallback}`;
           }
           
           // Recreate expanded content with switched fonts
@@ -692,6 +746,7 @@
         const heading = document.createElement('h2');
         heading.className = 'expanded-heading';
         heading.textContent = h3?.textContent || 'Heading';
+        // Use normalized font1 name to ensure correct font is applied
         heading.style.fontFamily = font1Family;
         headingLink.appendChild(heading);
         
@@ -707,12 +762,14 @@
         const subheading = document.createElement('p');
         subheading.className = 'expanded-subheading';
         subheading.textContent = p?.textContent || 'Subheading';
+        // Use normalized font2 name to ensure correct font is applied
         subheading.style.fontFamily = font2Family;
         subheadingLink.appendChild(subheading);
         
         const body = document.createElement('p');
         body.className = 'expanded-body';
         body.textContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.';
+        // Use normalized font2 name for body text
         body.style.fontFamily = font2Family;
         
         main.appendChild(headingLink);
@@ -821,25 +878,33 @@
             else if (currentStyle === 'Display') fallback = 'sans-serif';
             else if (currentStyle === 'Slab Serif') fallback = 'serif';
             
+            // Normalize font names for proper Google Fonts loading
+            const normalizedFont1 = font1.split(' ').map(word => 
+              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+            const normalizedFont2 = font2.split(' ').map(word => 
+              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+            
             if (h3) {
               h3.textContent = font1;
-              // Apply font1 to heading
-              h3.style.fontFamily = `"${font1}", ${fallback}`;
+              // Apply font1 to heading with normalized name
+              h3.style.fontFamily = `"${normalizedFont1}", ${fallback}`;
             }
             if (p) {
               p.textContent = font2;
-              // Apply font2 to subheading
-              p.style.fontFamily = `"${font2}", ${fallback}`;
+              // Apply font2 to subheading with normalized name
+              p.style.fontFamily = `"${normalizedFont2}", ${fallback}`;
             }
             if (big) {
               big.textContent = pair.sample1 || 'A';
-              // Apply font1 to big glyph
-              big.style.fontFamily = `"${font1}", ${fallback}`;
+              // Apply font1 to big glyph with normalized name
+              big.style.fontFamily = `"${normalizedFont1}", ${fallback}`;
             }
             if (small) {
               small.textContent = pair.sample2 || 'A';
-              // Apply font2 to small glyph
-              small.style.fontFamily = `"${font2}", ${fallback}`;
+              // Apply font2 to small glyph with normalized name
+              small.style.fontFamily = `"${normalizedFont2}", ${fallback}`;
             }
 
             // Store font pair data on card for saving
