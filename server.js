@@ -6,7 +6,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+// CORS - Allow all origins (for GitHub Pages and localhost)
+// In production, you may want to restrict this to specific domains
+app.use(cors({
+  origin: '*', // Allow all origins - update this if you want to restrict
+  credentials: false
+}));
 app.use(express.json());
 
 // Google Fonts validation endpoint
