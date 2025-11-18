@@ -4,28 +4,68 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
-  <title>About | UJU Foreal</title>
-  <meta name="description" content="Learn more about UJU Foreal.">
+  <title>About | UjU Guru</title>
+  <meta name="description" content="Learn more about UjU Guru.">
 </head>
-<body>
-  <header>
-    <h1>About UJU Foreal</h1>
-    <nav>
-      <a href="index.html">Home</a> |
-      <a href="matchmaker.html">Matchmaker</a> |
-      <a href="about.html">About</a> |
+<body class="about-page">
+  <div class="mm-topbar">
+    <div class="mm-brand">UjU</div>
+    <nav class="mm-nav">
+      <a href="matchmaker.html">Match Maker</a>
       <a href="learn.html">Learn</a>
+      <a href="about.html">About</a>
     </nav>
-  </header>
-  <main>
-    <h2>Our Story</h2>
-    <p>UJU Foreal is dedicated to connecting people meaningfully.</p>
-  </main>
-  <footer>
-    <p>&copy; <span id="year"></span> UJU Foreal</p>
-  </footer>
+  </div>
+  <div class="about-container">
+    <div class="about-intro">
+      <h1 class="about-title">Thanks for chillin with UjU</h1>
+      <p class="about-text">UjU started as an ugly Ui concept in my door room.</p>
+      <p class="about-text">Then I was introduced to Ai Coding.</p>
+    </div>
+    
+    <div class="about-section">
+      <p class="about-text">This platform is 100% free to use, all typefaces are 100% free to use through google fonts!</p>
+    </div>
+    
+    <div class="about-contact">
+      <div class="about-contact-item">
+        <p class="about-text">Have any suggestions?<br><a href="mailto:dylandeweydesign@gmail.com" class="about-link" id="emailLink">Email me.</a></p>
+      </div>
+      <div class="about-contact-item about-contact-ig">
+        <a href="https://www.instagram.com/wireframe.ddw/" target="_blank" rel="noopener noreferrer" class="about-ig-link">
+          <p class="about-text">Or hit me up on IG</p>
+          <img src="https://www.figma.com/api/mcp/asset/46ac36e1-3b05-434d-83a3-c21e197ae40b" alt="Instagram" class="about-icon">
+        </a>
+      </div>
+    </div>
+    
+    <div class="about-donate">
+      <div class="about-donate-text">
+        <p class="about-text">Buy me a beer!</p>
+      </div>
+      <a href="https://ko-fi.com/dylandewey" target="_blank" rel="noopener noreferrer" class="about-donate-btn">Donate :)</a>
+    </div>
+  </div>
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // Copy email to clipboard when clicked
+    document.getElementById('emailLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      const email = 'dylandeweydesign@gmail.com';
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(email).then(function() {
+        // Optional: Show feedback (you can customize this)
+        const originalText = this.textContent;
+        this.textContent = 'Copied!';
+        setTimeout(() => {
+          this.textContent = originalText;
+        }, 1000);
+      }.bind(this)).catch(function(err) {
+        console.error('Failed to copy email:', err);
+        // Fallback: open mailto link
+        window.location.href = 'mailto:' + email;
+      });
+    });
   </script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 1. **Go to Railway**: https://railway.app
 2. **Sign up** with your GitHub account
 3. **Click "New Project"** → **"Deploy from GitHub repo"**
-4. **Select your repository** (`uju_foreal`)
+4. **Select your repository** (`uju_guru`)
 5. **Select the root directory**: If your `server.js` is in `unititled/`, set root directory to `unititled`
 6. **Add Environment Variable**:
    - Click on your project → **Variables** tab
@@ -37,7 +37,7 @@
 4. **Folder**: `/unititled` (or `/` if your HTML files are in root)
 5. **Click Save**
 
-Your site will be live at: `https://yourusername.github.io/uju_foreal/unititled/matchmaker.html`
+Your site will be live at: `https://yourusername.github.io/uju_guru/unititled/matchmaker.html`
 
 ### Step 4: Test It!
 

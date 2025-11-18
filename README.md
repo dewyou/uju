@@ -1,4 +1,4 @@
-# UJU Foreal Matchmaker
+# UjU Guru Matchmaker
 
 A typographic font pair matching tool powered by OpenAI.
 

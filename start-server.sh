@@ -1,7 +1,7 @@
 #!/bin/bash
-# Quick start script for UJU Foreal backend server
+# Quick start script for UjU Guru backend server
 
-echo "Starting UJU Foreal backend server..."
+echo "Starting UjU Guru backend server..."
 echo ""
 
 # Check if .env exists

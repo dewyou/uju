@@ -1,7 +1,7 @@
 {
-  "name": "uju-foreal",
+  "name": "uju-guru",
   "version": "1.0.0",
-  "description": "UJU Foreal Matchmaker API",
+  "description": "UjU Guru Matchmaker API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -1,4 +1,4 @@
-/* Base styles for UJU Foreal */
+/* Base styles for UjU Guru */
 :root {
   --text-color: #1f2937;
   --bg-color: #ffffff;
@@ -798,4 +798,201 @@ main {
   .mm-results-head .line { font-size: 24px; }
   .mm-actions { font-size: 22px; gap: 32px; }
   .mm-input { width: 100%; }
+}
+
+/* About page styles */
+.about-page {
+  background: #242424;
+  color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.about-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 36px;
+  padding-top: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.about-intro {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.about-title {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: normal;
+  color: #f9f9f9;
+  margin: 0;
+  width: 100%;
+}
+
+.about-text {
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: normal;
+  color: #f9f9f9;
+  margin: 0;
+  width: 100%;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.about-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+  align-items: flex-start;
+  margin-top: -80px;
+  margin-bottom: -80px;
+}
+
+.about-section .about-text {
+  text-align: left;
+}
+
+.about-contact {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  align-items: flex-start;
+}
+
+.about-contact-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.about-contact-item .about-text {
+  text-align: left;
+}
+
+.about-contact-ig {
+  flex-direction: row;
+  gap: 24px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.about-ig-link {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: center;
+  justify-content: flex-start;
+  text-decoration: none;
+  color: inherit;
+}
+
+.about-contact-ig .about-text {
+  width: auto;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.about-link {
+  color: #f9f9f9;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+  text-underline-position: from-font;
+  text-decoration-style: solid;
+}
+
+.about-link:hover {
+  opacity: 0.8;
+}
+
+.about-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.about-donate {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.about-donate-text {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.about-donate-text .about-text {
+  text-align: left;
+}
+
+.about-donate-btn {
+  background: #1f90e6;
+  color: #f9f9f9;
+  border: none;
+  border-radius: 12px;
+  padding: 15px 49px;
+  height: 54px;
+  width: 164px;
+  font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: normal;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.about-donate-btn:hover {
+  opacity: 0.9;
+}
+
+.about-donate-btn:active {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .about-container {
+    padding: 0 24px;
+    gap: 80px;
+  }
+  
+  .about-title {
+    font-size: 48px;
+  }
+  
+  .about-text {
+    font-size: 24px;
+  }
+  
+  .about-contact-ig {
+    flex-wrap: wrap;
+  }
 }
