@@ -180,6 +180,72 @@ html {
   display: block;
 }
 
+/* Input wrapper for autocomplete positioning */
+.mm-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: calc(198px + 18px + 198px);
+}
+
+/* Autocomplete dropdown */
+.mm-autocomplete {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 100;
+  background: #1f1f1f;
+  border: 1px solid #6b6b6b;
+  border-radius: 12px;
+  padding: 8px;
+  list-style: none;
+  color: rgba(249, 249, 249, 0.95);
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mm-autocomplete.show {
+  display: block;
+}
+
+.mm-autocomplete-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.15s ease;
+}
+
+.mm-autocomplete-item:hover,
+.mm-autocomplete-item.highlighted {
+  background: #2a2a2a;
+}
+
+.mm-autocomplete-item:active {
+  background: #333333;
+}
+
+/* Scrollbar styling for autocomplete */
+.mm-autocomplete::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mm-autocomplete::-webkit-scrollbar-track {
+  background: #1f1f1f;
+  border-radius: 4px;
+}
+
+.mm-autocomplete::-webkit-scrollbar-thumb {
+  background: #6b6b6b;
+  border-radius: 4px;
+}
+
+.mm-autocomplete::-webkit-scrollbar-thumb:hover {
+  background: #7b7b7b;
+}
+
 /* Make selects visually identical to input: remove native gradients/arrows */
 .mm-select {
   -webkit-appearance: none;
@@ -798,6 +864,7 @@ main {
   .mm-results-head .line { font-size: 24px; }
   .mm-actions { font-size: 22px; gap: 32px; }
   .mm-input { width: 100%; }
+  .mm-input-wrapper { width: 100%; }
 }
 
 /* About page styles */

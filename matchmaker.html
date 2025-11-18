@@ -38,7 +38,12 @@
         Current typeface <span style="color: rgba(249, 249, 249, 0.5); font-weight: normal;">(optional)</span>
         <span class="error-msg" id="typefaceError" style="display: none;">* font not on google fonts</span>
       </label>
-      <input class="mm-input" id="currentTypeface" name="currentTypeface" type="text" placeholder="Input your current typeface or paste Google Fonts URL" />
+      <div class="mm-input-wrapper" style="position: relative;">
+        <input class="mm-input" id="currentTypeface" name="currentTypeface" type="text" placeholder="Input your current typeface or paste Google Fonts URL" autocomplete="off" />
+        <div class="mm-autocomplete" id="fontAutocomplete" role="listbox" aria-label="Font suggestions">
+          <!-- Suggestions will be dynamically inserted here -->
+        </div>
+      </div>
 
       <div class="mm-row">
         <div class="mm-col">
@@ -433,6 +438,149 @@
         const style = styleHidden.value.trim();
         return { currentTypeface, emotion, style };
       }
+
+      // Autocomplete functionality
+      const fontAutocomplete = document.getElementById('fontAutocomplete');
+      let highlightedIndex = -1;
+      let currentSuggestions = [];
+
+      function filterFonts(query) {
+        if (!query || query.trim() === '') {
+          return [];
+        }
+        
+        const normalizedQuery = query.toLowerCase().trim();
+        const matches = [];
+        
+        // Filter fonts that start with the query (highest priority)
+        const startsWith = GOOGLE_FONTS_LIST.filter(font => 
+          font.toLowerCase().startsWith(normalizedQuery)
+        );
+        
+        // Filter fonts that contain the query (lower priority)
+        const contains = GOOGLE_FONTS_LIST.filter(font => {
+          const fontLower = font.toLowerCase();
+          return fontLower.includes(normalizedQuery) && 
+                 !fontLower.startsWith(normalizedQuery);
+        });
+        
+        // Combine results (starts with first, then contains)
+        matches.push(...startsWith, ...contains);
+        
+        // Limit to 10 suggestions for better UX
+        return matches.slice(0, 10);
+      }
+
+      function renderSuggestions(suggestions) {
+        fontAutocomplete.innerHTML = '';
+        currentSuggestions = suggestions;
+        highlightedIndex = -1;
+        
+        if (suggestions.length === 0) {
+          fontAutocomplete.classList.remove('show');
+          return;
+        }
+        
+        suggestions.forEach((font, index) => {
+          const item = document.createElement('div');
+          item.className = 'mm-autocomplete-item';
+          item.setAttribute('role', 'option');
+          item.setAttribute('data-index', index);
+          item.textContent = font;
+          
+          item.addEventListener('click', function() {
+            selectFont(font);
+          });
+          
+          fontAutocomplete.appendChild(item);
+        });
+        
+        fontAutocomplete.classList.add('show');
+      }
+
+      function selectFont(fontName) {
+        currentTypefaceInput.value = fontName;
+        fontAutocomplete.classList.remove('show');
+        highlightedIndex = -1;
+        
+        // Trigger validation
+        currentTypefaceInput.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        // Focus back on input
+        currentTypefaceInput.focus();
+      }
+
+      function highlightItem(index) {
+        const items = fontAutocomplete.querySelectorAll('.mm-autocomplete-item');
+        
+        // Remove previous highlight
+        if (highlightedIndex >= 0 && items[highlightedIndex]) {
+          items[highlightedIndex].classList.remove('highlighted');
+        }
+        
+        // Add new highlight
+        if (index >= 0 && index < items.length) {
+          highlightedIndex = index;
+          items[index].classList.add('highlighted');
+          
+          // Scroll into view if needed
+          items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        } else {
+          highlightedIndex = -1;
+        }
+      }
+
+      function handleKeyboardNavigation(e) {
+        if (!fontAutocomplete.classList.contains('show') || currentSuggestions.length === 0) {
+          return;
+        }
+        
+        const items = fontAutocomplete.querySelectorAll('.mm-autocomplete-item');
+        
+        switch(e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            if (highlightedIndex < items.length - 1) {
+              highlightItem(highlightedIndex + 1);
+            } else {
+              highlightItem(0);
+            }
+            break;
+            
+          case 'ArrowUp':
+            e.preventDefault();
+            if (highlightedIndex > 0) {
+              highlightItem(highlightedIndex - 1);
+            } else {
+              highlightItem(items.length - 1);
+            }
+            break;
+            
+          case 'Enter':
+            e.preventDefault();
+            if (highlightedIndex >= 0 && items[highlightedIndex]) {
+              selectFont(currentSuggestions[highlightedIndex]);
+            } else if (currentSuggestions.length > 0) {
+              // Select first suggestion if none highlighted
+              selectFont(currentSuggestions[0]);
+            }
+            break;
+            
+          case 'Escape':
+            e.preventDefault();
+            fontAutocomplete.classList.remove('show');
+            highlightedIndex = -1;
+            break;
+        }
+      }
+
+      // Close autocomplete when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.mm-input-wrapper')) {
+          fontAutocomplete.classList.remove('show');
+          highlightedIndex = -1;
+        }
+      });
 
       let fontValidationCache = {}; // Cache validation results
       let isValidGoogleFont = false;
@@ -1321,13 +1469,30 @@
 
       // Real-time validation on input (optional field - only validate if something is entered)
       let validationTimeout;
+      let autocompleteTimeout;
+      
       currentTypefaceInput.addEventListener('input', function() {
-        // Clear previous timeout
+        const inputValue = this.value.trim();
+        
+        // Clear previous timeouts
         clearTimeout(validationTimeout);
+        clearTimeout(autocompleteTimeout);
+        
+        // Show autocomplete suggestions as user types
+        autocompleteTimeout = setTimeout(() => {
+          if (inputValue.length > 0) {
+            const suggestions = filterFonts(inputValue);
+            renderSuggestions(suggestions);
+          } else {
+            fontAutocomplete.classList.remove('show');
+            highlightedIndex = -1;
+          }
+        }, 150); // Show suggestions faster than validation
         
         // Clear error state if field is empty (it's optional)
-        if (this.value.trim() === '') {
+        if (inputValue === '') {
           showFontError(false);
+          fontAutocomplete.classList.remove('show');
           return;
         }
 
@@ -1344,10 +1509,13 @@
           }
         }, 500);
       });
+      
+      // Add keyboard navigation
+      currentTypefaceInput.addEventListener('keydown', handleKeyboardNavigation);
 
-      // Allow Enter key to submit
+      // Allow Enter key to submit (only if autocomplete is not open)
       currentTypefaceInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !fontAutocomplete.classList.contains('show')) {
           generateMatches();
         }
       });
