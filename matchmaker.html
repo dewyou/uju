@@ -443,35 +443,155 @@
       const fontAutocomplete = document.getElementById('fontAutocomplete');
       let highlightedIndex = -1;
       let currentSuggestions = [];
+      let isShowingSimilarFonts = false; // Track if we're showing similar fonts
+
+      // Calculate similarity between two strings (Levenshtein distance based)
+      function calculateSimilarity(str1, str2) {
+        const s1 = str1.toLowerCase();
+        const s2 = str2.toLowerCase();
+        
+        // Exact match
+        if (s1 === s2) return 100;
+        
+        // One contains the other
+        if (s1.includes(s2) || s2.includes(s1)) return 80;
+        
+        // Calculate Levenshtein distance
+        const len1 = s1.length;
+        const len2 = s2.length;
+        const matrix = [];
+        
+        for (let i = 0; i <= len2; i++) {
+          matrix[i] = [i];
+        }
+        
+        for (let j = 0; j <= len1; j++) {
+          matrix[0][j] = j;
+        }
+        
+        for (let i = 1; i <= len2; i++) {
+          for (let j = 1; j <= len1; j++) {
+            if (s2.charAt(i - 1) === s1.charAt(j - 1)) {
+              matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+              matrix[i][j] = Math.min(
+                matrix[i - 1][j - 1] + 1,
+                matrix[i][j - 1] + 1,
+                matrix[i - 1][j] + 1
+              );
+            }
+          }
+        }
+        
+        const distance = matrix[len2][len1];
+        const maxLen = Math.max(len1, len2);
+        const similarity = ((maxLen - distance) / maxLen) * 100;
+        
+        return similarity;
+      }
+
+      // Find similar fonts to the query
+      function findSimilarFonts(query, limit = 8) {
+        const normalizedQuery = query.toLowerCase().trim();
+        
+        // Check if exact match exists
+        const exactMatch = GOOGLE_FONTS_LIST.find(font => 
+          font.toLowerCase() === normalizedQuery
+        );
+        
+        if (exactMatch) {
+          return { exact: true, fonts: [] };
+        }
+        
+        // Common non-Google Fonts and their Google Fonts alternatives
+        const fontAlternatives = {
+          'helvetica': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Inter', 'Source Sans Pro', 'Nunito Sans', 'DM Sans'],
+          'arial': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Source Sans Pro', 'Nunito Sans', 'DM Sans', 'Inter'],
+          'times': ['Merriweather', 'Lora', 'Crimson Text', 'Libre Baskerville', 'PT Serif', 'Noto Serif', 'Playfair Display', 'Bitter'],
+          'times new roman': ['Merriweather', 'Lora', 'Crimson Text', 'Libre Baskerville', 'PT Serif', 'Noto Serif', 'Playfair Display', 'Bitter'],
+          'courier': ['Roboto Mono', 'Source Code Pro', 'Fira Code', 'Inconsolata', 'JetBrains Mono', 'Space Mono', 'Courier Prime', 'PT Mono'],
+          'courier new': ['Roboto Mono', 'Source Code Pro', 'Fira Code', 'Inconsolata', 'JetBrains Mono', 'Space Mono', 'Courier Prime', 'PT Mono'],
+          'verdana': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Source Sans Pro', 'Nunito Sans', 'DM Sans', 'Inter'],
+          'georgia': ['Merriweather', 'Lora', 'Crimson Text', 'Libre Baskerville', 'PT Serif', 'Noto Serif', 'Playfair Display', 'Bitter'],
+          'comic sans': ['Indie Flower', 'Shadows Into Light', 'Kalam', 'Caveat', 'Dancing Script', 'Permanent Marker', 'Gloria Hallelujah', 'Amatic SC'],
+          'comic sans ms': ['Indie Flower', 'Shadows Into Light', 'Kalam', 'Caveat', 'Dancing Script', 'Permanent Marker', 'Gloria Hallelujah', 'Amatic SC'],
+          'trebuchet': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Source Sans Pro', 'Nunito Sans', 'DM Sans', 'Inter'],
+          'trebuchet ms': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Source Sans Pro', 'Nunito Sans', 'DM Sans', 'Inter'],
+          'impact': ['Bebas Neue', 'Oswald', 'Anton', 'Fjalla One', 'Righteous', 'Bangers', 'Black Ops One', 'Archivo Black'],
+          'palatino': ['Merriweather', 'Lora', 'Crimson Text', 'Libre Baskerville', 'PT Serif', 'Noto Serif', 'Playfair Display', 'Bitter'],
+          'palatino linotype': ['Merriweather', 'Lora', 'Crimson Text', 'Libre Baskerville', 'PT Serif', 'Noto Serif', 'Playfair Display', 'Bitter'],
+          'tahoma': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Source Sans Pro', 'Nunito Sans', 'DM Sans', 'Inter'],
+          'lucida': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Source Sans Pro', 'Nunito Sans', 'DM Sans', 'Inter'],
+          'lucida grande': ['Roboto', 'Open Sans', 'Lato', 'Work Sans', 'Source Sans Pro', 'Nunito Sans', 'DM Sans', 'Inter']
+        };
+        
+        // Check if we have predefined alternatives
+        if (fontAlternatives[normalizedQuery]) {
+          return { exact: false, fonts: fontAlternatives[normalizedQuery] };
+        }
+        
+        // Find similar fonts using similarity algorithm
+        const fontScores = GOOGLE_FONTS_LIST.map(font => ({
+          font: font,
+          score: calculateSimilarity(normalizedQuery, font)
+        }));
+        
+        // Sort by similarity score (highest first)
+        fontScores.sort((a, b) => b.score - a.score);
+        
+        // Filter fonts with reasonable similarity (at least 30% similar)
+        const similarFonts = fontScores
+          .filter(item => item.score >= 30)
+          .slice(0, limit)
+          .map(item => item.font);
+        
+        return { exact: false, fonts: similarFonts };
+      }
 
       function filterFonts(query) {
         if (!query || query.trim() === '') {
-          return [];
+          return { fonts: [], isSimilar: false };
         }
         
         const normalizedQuery = query.toLowerCase().trim();
         const matches = [];
         
-        // Filter fonts that start with the query (highest priority)
-        const startsWith = GOOGLE_FONTS_LIST.filter(font => 
-          font.toLowerCase().startsWith(normalizedQuery)
+        // First check if it's an exact match
+        const exactMatch = GOOGLE_FONTS_LIST.find(font => 
+          font.toLowerCase() === normalizedQuery
         );
         
-        // Filter fonts that contain the query (lower priority)
-        const contains = GOOGLE_FONTS_LIST.filter(font => {
-          const fontLower = font.toLowerCase();
-          return fontLower.includes(normalizedQuery) && 
-                 !fontLower.startsWith(normalizedQuery);
-        });
+        if (exactMatch) {
+          // Exact match found - show normal autocomplete
+          isShowingSimilarFonts = false;
+          
+          // Filter fonts that start with the query (highest priority)
+          const startsWith = GOOGLE_FONTS_LIST.filter(font => 
+            font.toLowerCase().startsWith(normalizedQuery)
+          );
+          
+          // Filter fonts that contain the query (lower priority)
+          const contains = GOOGLE_FONTS_LIST.filter(font => {
+            const fontLower = font.toLowerCase();
+            return fontLower.includes(normalizedQuery) && 
+                   !fontLower.startsWith(normalizedQuery);
+          });
+          
+          // Combine results (starts with first, then contains)
+          matches.push(...startsWith, ...contains);
+          
+          // Limit to 10 suggestions for better UX
+          return { fonts: matches.slice(0, 10), isSimilar: false };
+        }
         
-        // Combine results (starts with first, then contains)
-        matches.push(...startsWith, ...contains);
+        // No exact match - find similar fonts
+        isShowingSimilarFonts = true;
+        const similarResult = findSimilarFonts(query, 8);
         
-        // Limit to 10 suggestions for better UX
-        return matches.slice(0, 10);
+        return { fonts: similarResult.fonts, isSimilar: true };
       }
 
-      function renderSuggestions(suggestions) {
+      function renderSuggestions(suggestions, isSimilar = false) {
         fontAutocomplete.innerHTML = '';
         currentSuggestions = suggestions;
         highlightedIndex = -1;
@@ -479,6 +599,14 @@
         if (suggestions.length === 0) {
           fontAutocomplete.classList.remove('show');
           return;
+        }
+        
+        // Add header message if showing similar fonts
+        if (isSimilar && suggestions.length > 0) {
+          const header = document.createElement('div');
+          header.className = 'mm-autocomplete-header';
+          header.textContent = 'Not on Google Fonts, but here are similar options:';
+          fontAutocomplete.appendChild(header);
         }
         
         suggestions.forEach((font, index) => {
@@ -503,7 +631,10 @@
         fontAutocomplete.classList.remove('show');
         highlightedIndex = -1;
         
-        // Trigger validation
+        // Clear error since they selected a valid Google Font
+        showFontError(false);
+        
+        // Trigger validation (will confirm it's valid)
         currentTypefaceInput.dispatchEvent(new Event('input', { bubbles: true }));
         
         // Focus back on input
@@ -535,6 +666,7 @@
           return;
         }
         
+        // Only get actual font items, not the header
         const items = fontAutocomplete.querySelectorAll('.mm-autocomplete-item');
         
         switch(e.key) {
@@ -1481,8 +1613,13 @@
         // Show autocomplete suggestions as user types
         autocompleteTimeout = setTimeout(() => {
           if (inputValue.length > 0) {
-            const suggestions = filterFonts(inputValue);
-            renderSuggestions(suggestions);
+            const result = filterFonts(inputValue);
+            renderSuggestions(result.fonts, result.isSimilar);
+            
+            // If showing similar fonts, also show error message immediately
+            if (result.isSimilar && result.fonts.length > 0) {
+              showFontError(true);
+            }
           } else {
             fontAutocomplete.classList.remove('show');
             highlightedIndex = -1;

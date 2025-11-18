@@ -227,6 +227,16 @@ html {
   background: #333333;
 }
 
+/* Autocomplete header message */
+.mm-autocomplete-header {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: rgba(249, 249, 249, 0.7);
+  border-bottom: 1px solid #3d3d3d;
+  margin-bottom: 4px;
+  font-style: italic;
+}
+
 /* Scrollbar styling for autocomplete */
 .mm-autocomplete::-webkit-scrollbar {
   width: 8px;
